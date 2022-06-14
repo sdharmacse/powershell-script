@@ -1,0 +1,1 @@
+Get-Disk | where PartitionStyle  -eq 'raw' | Initialize-Disk -PartitionStyle GPT -PassThru | New-Partition -DriveLetter Y  -UseMaximumSize |   Format-Volume -FileSystem NTFS -NewFileSystemLabel "Cache"

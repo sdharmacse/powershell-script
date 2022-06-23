@@ -1,8 +1,8 @@
 param (
-[Parameter(Mandatory = $true)) $FileShareName, 
+[Parameter(Mandatory = $true)]$FileShareName, 
 [Parameter(Mandatory = $true)]$StorageAccountName,
-[Parameter(Mandatory = $true)] $key, 
-(Parameter(Mandatory = $true)]$DriveLetter
+[Parameter(Mandatory = $true)]$key, 
+[Parameter(Mandatory = $true)]$DriveLetter
 )
 
 $connectTestResult = Test-NetConnection -ComputerName $StorageAccountName.file.core.windows.net -Port 445

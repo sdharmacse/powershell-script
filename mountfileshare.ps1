@@ -1,4 +1,4 @@
- param (
+param (
 [Parameter(Mandatory = $true)] $FileShareName, 
 [Parameter(Mandatory = $true)]$StorageAccountName,
 [Parameter(Mandatory = $true)] $key, 

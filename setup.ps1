@@ -4,6 +4,17 @@
 # LICENSE file in the root directory of this source tree.
 
 # Make sure this file has Windows line endings
+ Param
+(
+    
+    [string]$application_id,
+    [string]$domain_name,
+    [string]$safe_mode_admin_password,
+    [string]$aad_client_secret,
+    [string]$tenant_id,
+    [string]$virtual_machine_name,
+    [string]$account_name
+) 
 
 $LOG_FILE = "C:\Teradici\provisioning.log"
 

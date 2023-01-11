@@ -66,7 +66,7 @@ else {
   $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
 }
 
-$DomainName = "${domain_name}"
+$DomainName = "$domain_name"
 $DomainMode = "7"
 $ForestMode = "7"
 $DatabasePath = "C:\Windows\NTDS"

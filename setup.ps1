@@ -5,13 +5,6 @@
 
 # Make sure this file has Windows line endings
 
-Param
-(
-    [Parameter(Mandatory=$True)]
-    [string]$safe_mode_admin_password
-)   
-
-
 $LOG_FILE = "C:\Teradici\provisioning.log"
 
 $STAGE_FILE = "C:\Teradici\stage1.txt"
@@ -27,14 +20,8 @@ $DATA.Add("safe_mode_admin_password", "${safe_mode_admin_password}")
 
 Function Get-AccessToken
 (
-   Param(
-       [Parameter(Mandatory=$True)]
-       [string]$application_id,
-       [Parameter(Mandatory=$True)]
-       [string]$aad_client_secret
-	)
-#  [string]$application_id,
-#  [string]$aad_client_secret,
+  [string]$application_id,
+  [string]$aad_client_secret,
   [string]$oath2Uri
 ) {
   $body = 'grant_type=client_credentials'
@@ -49,17 +36,9 @@ Function Get-AccessToken
 
 Function Get-Secret
 (   
-    Param(
-       [Parameter(Mandatory=$True)]
-       [string]$application_id,
-	   [Parameter(Mandatory=$True)]
-       [string]$aad_client_secret,
-	   [Parameter(Mandatory=$True)]
-       [string]$tenant_id
-	)
-  #[string]$application_id,
-  #[string]$aad_client_secret,
-  #[string]$tenant_id,
+  [string]$application_id,
+  [string]$aad_client_secret,
+  [string]$tenant_id,
   [string]$secret_identifier
 ) {
   $oath2Uri = "https://login.microsoftonline.com/$tenant_id/oauth2/token"
@@ -86,11 +65,8 @@ else {
   Write-Output "Calling Get-Secret"
   $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
 }
-Param(
-    [Parameter(Mandatory=$True)]
-    [string]$domain_name
-	)
-#$DomainName = "${domain_name}"
+
+$DomainName = "${domain_name}"
 $DomainMode = "7"
 $ForestMode = "7"
 $DatabasePath = "C:\Windows\NTDS"
@@ -119,7 +95,7 @@ Install-ADDSForest -CreateDnsDelegation:$false `
   -SafeModeAdministratorPassword (ConvertTo-SecureString $DATA."safe_mode_admin_password" -AsPlainText -Force) `
   -DatabasePath $DatabasePath `
   -SysvolPath $SysvolPath `
-  -DomainName $domain_name `
+  -DomainName $DomainName `
   -DomainMode $DomainMode `
   -ForestMode $ForestMode `
   -InstallDNS:$true `
@@ -129,11 +105,7 @@ Install-ADDSForest -CreateDnsDelegation:$false `
 Write-Output "================================================================"
 Write-Output "Configuring LDAPS..."
 Write-Output "================================================================"
-Param(
-	[Parameter(Mandatory=$True)]
-    [string]$virtual_machine_name
-	)
-$DnsName = "${virtual_machine_name}.$domain_name"
+$DnsName = "${virtual_machine_name}.$DomainName"
 Write-Output "Using DNS Name $DnsName"
 $certStoreLoc = 'HKLM:\Software\Microsoft\Cryptography\Services\NTDS\SystemCertificates\My\Certificates';
 $params = @{

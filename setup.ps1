@@ -5,6 +5,23 @@
 
 # Make sure this file has Windows line endings
 
+Param
+(
+    [Parameter(Mandatory=$True)]
+    [string]$application_id,
+    [Parameter(Mandatory=$True)]
+    [string]$domain_name,
+    [Parameter(Mandatory=$True)]
+    [string]$safe_mode_admin_password,
+    [Parameter(Mandatory=$True)]
+    [string]$aad_client_secret
+	  [Parameter(Mandatory=$True)]
+    [string]$tenant_id
+	  [Parameter(Mandatory=$True)]
+    [string]$virtual_machine_name
+)   
+
+
 $LOG_FILE = "C:\Teradici\provisioning.log"
 
 $STAGE_FILE = "C:\Teradici\stage1.txt"
@@ -20,8 +37,8 @@ $DATA.Add("safe_mode_admin_password", "${safe_mode_admin_password}")
 
 Function Get-AccessToken
 (
-  [string]$application_id,
-  [string]$aad_client_secret,
+#  [string]$application_id,
+#  [string]$aad_client_secret,
   [string]$oath2Uri
 ) {
   $body = 'grant_type=client_credentials'
@@ -36,9 +53,9 @@ Function Get-AccessToken
 
 Function Get-Secret
 (   
-  [string]$application_id,
-  [string]$aad_client_secret,
-  [string]$tenant_id,
+  #[string]$application_id,
+  #[string]$aad_client_secret,
+  #[string]$tenant_id,
   [string]$secret_identifier
 ) {
   $oath2Uri = "https://login.microsoftonline.com/$tenant_id/oauth2/token"
@@ -66,7 +83,7 @@ else {
   $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
 }
 
-$DomainName = "${domain_name}"
+#$DomainName = "${domain_name}"
 $DomainMode = "7"
 $ForestMode = "7"
 $DatabasePath = "C:\Windows\NTDS"
@@ -95,7 +112,7 @@ Install-ADDSForest -CreateDnsDelegation:$false `
   -SafeModeAdministratorPassword (ConvertTo-SecureString $DATA."safe_mode_admin_password" -AsPlainText -Force) `
   -DatabasePath $DatabasePath `
   -SysvolPath $SysvolPath `
-  -DomainName $DomainName `
+  -DomainName $domain_name `
   -DomainMode $DomainMode `
   -ForestMode $ForestMode `
   -InstallDNS:$true `
@@ -105,7 +122,7 @@ Install-ADDSForest -CreateDnsDelegation:$false `
 Write-Output "================================================================"
 Write-Output "Configuring LDAPS..."
 Write-Output "================================================================"
-$DnsName = "${virtual_machine_name}.$DomainName"
+$DnsName = "${virtual_machine_name}.$domain_name"
 Write-Output "Using DNS Name $DnsName"
 $certStoreLoc = 'HKLM:\Software\Microsoft\Cryptography\Services\NTDS\SystemCertificates\My\Certificates';
 $params = @{

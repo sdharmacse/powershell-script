@@ -8,17 +8,7 @@
 Param
 (
     [Parameter(Mandatory=$True)]
-    [string]$application_id,
-    [Parameter(Mandatory=$True)]
-    [string]$domain_name,
-    [Parameter(Mandatory=$True)]
-    [string]$safe_mode_admin_password,
-    [Parameter(Mandatory=$True)]
-    [string]$aad_client_secret
-	  [Parameter(Mandatory=$True)]
-    [string]$tenant_id
-	  [Parameter(Mandatory=$True)]
-    [string]$virtual_machine_name
+    [string]$safe_mode_admin_password
 )   
 
 
@@ -37,6 +27,12 @@ $DATA.Add("safe_mode_admin_password", "${safe_mode_admin_password}")
 
 Function Get-AccessToken
 (
+   Param(
+       [Parameter(Mandatory=$True)]
+       [string]$application_id,
+       [Parameter(Mandatory=$True)]
+       [string]$aad_client_secret
+	)
 #  [string]$application_id,
 #  [string]$aad_client_secret,
   [string]$oath2Uri
@@ -53,6 +49,14 @@ Function Get-AccessToken
 
 Function Get-Secret
 (   
+    Param(
+       [Parameter(Mandatory=$True)]
+       [string]$application_id,
+	   [Parameter(Mandatory=$True)]
+       [string]$aad_client_secret,
+	   [Parameter(Mandatory=$True)]
+       [string]$tenant_id
+	)
   #[string]$application_id,
   #[string]$aad_client_secret,
   #[string]$tenant_id,
@@ -82,7 +86,10 @@ else {
   Write-Output "Calling Get-Secret"
   $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
 }
-
+Param(
+    [Parameter(Mandatory=$True)]
+    [string]$domain_name
+	)
 #$DomainName = "${domain_name}"
 $DomainMode = "7"
 $ForestMode = "7"
@@ -122,6 +129,10 @@ Install-ADDSForest -CreateDnsDelegation:$false `
 Write-Output "================================================================"
 Write-Output "Configuring LDAPS..."
 Write-Output "================================================================"
+Param(
+	[Parameter(Mandatory=$True)]
+    [string]$virtual_machine_name
+	)
 $DnsName = "${virtual_machine_name}.$domain_name"
 Write-Output "Using DNS Name $DnsName"
 $certStoreLoc = 'HKLM:\Software\Microsoft\Cryptography\Services\NTDS\SystemCertificates\My\Certificates';

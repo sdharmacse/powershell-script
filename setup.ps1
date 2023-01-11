@@ -49,7 +49,7 @@ Function Get-Secret
   
   $headers = @{ 'Authorization' = "Bearer $accessToken"; "Content-Type" = "application/json" }
 
-  $response = Invoke-RestMethod -Method GET -Ur $queryUrl -Headers $headers
+  $response = Invoke-RestMethod -Method GET -Uri $queryUrl -Headers $headers
   
   $result = $response.value
 
@@ -57,6 +57,10 @@ Function Get-Secret
 }
 
 Start-Transcript -path $LOG_FILE -append
+
+# Enforce TLS 1.2 due to Azure deprecation of prior versions
+# TODO: Investigate setting this persistently via registry etc.
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 if ([string]::IsNullOrWhiteSpace("${tenant_id}")) {
   Write-Output "Not calling Get-Secret"
@@ -66,7 +70,7 @@ else {
   $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
 }
 
-$DomainName = "$domain_name"
+$DomainName = "${domain_name}"
 $DomainMode = "7"
 $ForestMode = "7"
 $DatabasePath = "C:\Windows\NTDS"

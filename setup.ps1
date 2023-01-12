@@ -107,7 +107,7 @@ Write-Output "================================================================"
 Write-Output "Install a new forest..."
 Write-Output "================================================================"
 Install-ADDSForest -CreateDnsDelegation:$false `
-  -SafeModeAdministratorPassword (ConvertTo-SecureString $DATA."safe_mode_admin_password" -AsPlainText -Force) `
+  -SafeModeAdministratorPassword (ConvertTo-SecureString $DATA."safe_mode_admin_password" -AsSecureString -Force) `
   -DatabasePath $DatabasePath `
   -SysvolPath $SysvolPath `
   -DomainName $DomainName `

@@ -80,7 +80,7 @@ Start-Transcript -path $LOG_FILE -append
 #  Write-Output "Calling Get-Secret"
 #  $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
 #}
-$DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${safe_mode_admin_password}"
+#$DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${safe_mode_admin_password}"
 
 $DomainName = "${domain_name}"
 $DomainMode = "7"
@@ -108,7 +108,7 @@ Write-Output "================================================================"
 Write-Output "Install a new forest..."
 Write-Output "================================================================"
 Install-ADDSForest -CreateDnsDelegation:$false `
-  -SafeModeAdministratorPassword (ConvertTo-SecureString $DATA."safe_mode_admin_password" -AsSecureString -Force) `
+  -SafeModeAdministratorPassword (convertto-securestring $safe_mode_admin_password  -asplaintext -force) `
   -DatabasePath $DatabasePath `
   -SysvolPath $SysvolPath `
   -DomainName $DomainName `

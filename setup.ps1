@@ -73,13 +73,14 @@ Start-Transcript -path $LOG_FILE -append
 # TODO: Investigate setting this persistently via registry etc.
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-if ([string]::IsNullOrWhiteSpace("${tenant_id}")) {
-  Write-Output "Not calling Get-Secret"
-}
-else {
-  Write-Output "Calling Get-Secret"
-  $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
-}
+#if ([string]::IsNullOrWhiteSpace("${tenant_id}")) {
+#  Write-Output "Not calling Get-Secret"
+#}
+#else {
+#  Write-Output "Calling Get-Secret"
+#  $DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${tenant_id}"  "${safe_mode_admin_password}"
+#}
+$DATA."safe_mode_admin_password" = Get-Secret "${application_id}" "${aad_client_secret}" "${safe_mode_admin_password}"
 
 $DomainName = "${domain_name}"
 $DomainMode = "7"
